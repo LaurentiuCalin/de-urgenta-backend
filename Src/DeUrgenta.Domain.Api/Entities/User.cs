@@ -15,5 +15,6 @@ namespace DeUrgenta.Domain.Api.Entities
         public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
         public virtual ICollection<Group> GroupsAdministered { get; set; } = new List<Group>();
         public virtual ICollection<UserLocation> Locations { get; set; } = new List<UserLocation>();
+        public virtual ICollection<AlertChannel> SelectedAlertChannels { get; set; } = new List<AlertChannel>();
     }
 }

@@ -38,6 +38,10 @@ namespace DeUrgenta.Domain.Api.Configurations
             builder
                 .HasMany(x => x.Locations)
                 .WithOne(l=> l.User);
+
+            builder
+                .HasMany(x => x.SelectedAlertChannels)
+                .WithMany(x => x.Users);
         }
     }
 }

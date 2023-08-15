@@ -35,7 +35,7 @@ namespace DeUrgenta.RecurringJobs.Jobs
 
             foreach (var notification in notificationsToSend)
             {
-                var notificationStatus = await _notificationService.SendNotificationAsync(notification.Id);
+                var notificationStatus = await _notificationService.SendNotificationAsync(notification);
 
                 notification.Status = notificationStatus;
                 await _jobsContext.SaveChangesAsync(cancellationToken);

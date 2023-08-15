@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using DeUrgenta.Domain.Api.Entities;
 using DeUrgenta.Emailing.Service.Senders;
 using DeUrgenta.Domain.RecurringJobs;
+using DeUrgenta.Domain.RecurringJobs.Entities;
 using DeUrgenta.RecurringJobs.Services.NotificationSenders.EmailBuilders;
-using Microsoft.EntityFrameworkCore;
 
 namespace DeUrgenta.RecurringJobs.Services.NotificationSenders
 {
@@ -20,17 +20,20 @@ namespace DeUrgenta.RecurringJobs.Services.NotificationSenders
             _factory = factory;
         }
 
-        public async Task<bool> SendNotificationAsync(Guid notificationId)
+        public bool Accept(string alertChannelType)
         {
-            var notification = await _jobsContext.Notifications
-                .Include(n => n.CertificationDetails)
-                .Include(n => n.ItemDetails)
-                .FirstOrDefaultAsync(n => n.Id == notificationId);
+            return KnownAlertChannelTypes.Email == alertChannelType;
+        }
 
+        public async Task<bool> SendNotificationAsync(Notification notification)
+        {
             if (notification == null)
             {
                 return false;
             }
+
+            await _jobsContext.Entry(notification).Reference(x => x.CertificationDetails).LoadAsync();
+            await _jobsContext.Entry(notification).Reference(x => x.ItemDetails).LoadAsync();
 
             var emailRequestBuilder = _factory.GetBuilderInstance(notification.Type);
 

@@ -25,6 +25,7 @@ namespace DeUrgenta.Domain.Api
         public DbSet<BlogPost> Blogs { get; set; }
         public DbSet<BackpackToUser> BackpacksToUsers { get; set; }
         public DbSet<Invite> Invites { get; set; }
+        public DbSet<AlertChannel> AlertChannels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,6 +51,8 @@ namespace DeUrgenta.Domain.Api
 
             modelBuilder.ApplyConfiguration(new EventTypeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new InviteEntityConfiguration());
+
+            modelBuilder.ApplyConfiguration(new AlertChannelEntityConfiguration());
         }
 
         public string SchemaName => "public";

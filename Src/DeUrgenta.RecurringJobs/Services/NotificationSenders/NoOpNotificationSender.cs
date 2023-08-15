@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using DeUrgenta.Domain.RecurringJobs.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace DeUrgenta.RecurringJobs.Services.NotificationSenders
@@ -13,9 +13,14 @@ namespace DeUrgenta.RecurringJobs.Services.NotificationSenders
             _logger = logger;
         }
 
-        public Task<bool> SendNotificationAsync(Guid notificationId)
+        public bool Accept(string alertChannelType)
         {
-            _logger.LogInformation($"Sent notification Id '{notificationId}' to user.");
+            return false;
+        }
+
+        public Task<bool> SendNotificationAsync(Notification notification)
+        {
+            _logger.LogInformation($"Sent notification Id '{notification}' to user.");
 
             return Task.FromResult(true);
         }

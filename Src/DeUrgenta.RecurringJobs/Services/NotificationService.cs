@@ -1,39 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DeUrgenta.Domain.RecurringJobs.Entities;
-using DeUrgenta.RecurringJobs.Services.NotificationSenders;
-using Microsoft.Extensions.Logging;
 
 namespace DeUrgenta.RecurringJobs.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly IEnumerable<INotificationSender> _notificationSenders;
-        private readonly ILogger<NotificationService> _logger;
+        private readonly UserNotificationSendersFactory _userNotificationSendersFactory;
 
-        public NotificationService(IEnumerable<INotificationSender> notificationSenders, ILogger<NotificationService> logger)
+        public NotificationService(UserNotificationSendersFactory userNotificationSendersFactory)
         {
-            _notificationSenders = notificationSenders;
-            _logger = logger;
+            _userNotificationSendersFactory = userNotificationSendersFactory;
         }
 
-        public async Task<NotificationStatus> SendNotificationAsync(Guid notificationId)
+        public async Task<NotificationStatus> SendNotificationAsync(Notification notification)
         {
-            if (_notificationSenders == null || !_notificationSenders.Any())
-            {
-                _logger.LogWarning("No NotificationSenders configured. please revise the application settings");
-                return NotificationStatus.NotSent;
-            }
-
             var sendingTasks = new List<Task<bool>>();
-            foreach (var notificationSender in _notificationSenders)
+            await foreach (var notificationSender in _userNotificationSendersFactory.LoadSelectedSenders(notification.UserId))
             {
-                sendingTasks.Add(notificationSender.SendNotificationAsync(notificationId));
+                sendingTasks.Add(notificationSender.SendNotificationAsync(notification));
             }
+            
             var sentSuccessful = await Task.WhenAll(sendingTasks);
 
+            if (!sentSuccessful.Any())
+            {
+                return NotificationStatus.NotSent;
+            }
+            
             var notificationStatus = sentSuccessful.All(b => b)
                 ? NotificationStatus.Sent
                 : (sentSuccessful.Any(b => b)

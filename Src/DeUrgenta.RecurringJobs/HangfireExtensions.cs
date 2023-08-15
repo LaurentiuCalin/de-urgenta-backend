@@ -57,6 +57,8 @@ namespace DeUrgenta.RecurringJobs
 
             services.AddScoped<INotificationService, NotificationService>();
 
+            services.AddScoped<IUserNotificationSendersFactory,UserNotificationSendersFactory>();
+            
             services.Configure<EventArchivalJobConfig>(configuration.GetSection("RecurringJobsConfig:EventArchivalJobConfig"));
             services.AddScoped<IEventArchivalJob, EventArchivalJob>();
 
