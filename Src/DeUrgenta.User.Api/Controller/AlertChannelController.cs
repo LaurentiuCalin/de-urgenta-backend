@@ -8,6 +8,7 @@ using DeUrgenta.Common.Swagger;
 using DeUrgenta.Domain.Api.Entities;
 using DeUrgenta.User.Api.Commands;
 using DeUrgenta.User.Api.Models;
+using DeUrgenta.User.Api.Models.DTOs.Requests;
 using DeUrgenta.User.Api.Queries;
 using DeUrgenta.User.Api.Swagger.AlertChannels;
 using DeUrgenta.User.Api.Swagger.User;
@@ -73,30 +74,28 @@ public class AlertChannelController : BaseAuthController
     [SwaggerResponse(StatusCodes.Status204NoContent, "Update successful")]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "A business rule was violated", typeof(ProblemDetails))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Something bad happened", typeof(ProblemDetails))]
-    [SwaggerRequestExample(typeof(KnownAlertChannelTypes), typeof(AddOrUpdateUserRequestExample))]
+    [SwaggerRequestExample(typeof(EnableAlertChannelRequest), typeof(AddOrUpdateUserRequestExample))]
     [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(BusinessRuleViolationResponseExample))]
     [SwaggerResponseExample(StatusCodes.Status500InternalServerError, typeof(ApplicationErrorResponseExample))]
-    public async Task<ActionResult<UserModel>> UpdateUserAsync(UserRequest user, CancellationToken ct)
+    public async Task<ActionResult> EnableAlertChannel(EnableAlertChannelRequest request, CancellationToken ct)
     {
-        var result = await _mediator.Send(new UpdateUser(UserSub, user), ct);
-
-        return await _mapper.MapToActionResult(result, ct);
+        await _mediator.Send(new EnableAlertChannel(UserSub, request), ct);
+        return Ok("Alert channel enabled");
     }
 
     /// <summary>
-    /// Updates user info
+    /// Disables the alert channel for the user
     /// </summary>
-    [HttpPost("disable")]
+    [HttpDelete("disable")]
     [SwaggerResponse(StatusCodes.Status204NoContent, "Update successful")]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "A business rule was violated", typeof(ProblemDetails))]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Something bad happened", typeof(ProblemDetails))]
-    [SwaggerRequestExample(typeof(UserRequest), typeof(AddOrUpdateUserRequestExample))]
+    [SwaggerRequestExample(typeof(EnableAlertChannelRequest), typeof(AddOrUpdateUserRequestExample))]
     [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(BusinessRuleViolationResponseExample))]
     [SwaggerResponseExample(StatusCodes.Status500InternalServerError, typeof(ApplicationErrorResponseExample))]
-    public async Task<ActionResult<UserModel>> UpdateUserAsync(UserRequest user, CancellationToken ct)
+    public async Task<ActionResult> DisableAlertChannel(DisableAlertChannelRequest request, CancellationToken ct)
     {
-        var result = await _mediator.Send(new UpdateUser(UserSub, user), ct);
-
-        return await _mapper.MapToActionResult(result, ct);
+        await _mediator.Send(new DisableAlertChannel(UserSub, request), ct);
+        return NoContent();
     }
 }
