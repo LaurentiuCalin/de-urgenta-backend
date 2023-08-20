@@ -8,11 +8,11 @@ namespace DeUrgenta.User.Api.Commands;
 public class EnableAlertChannel : IRequest<Result<Unit, ValidationResult>>
 {
     public string UserSub { get; }
-    public EnableAlertChannelRequest Type { get; }
+    public EnableAlertChannelRequest EnableAlertChannelRequest { get; }
 
-    public EnableAlertChannel(string userSub, EnableAlertChannelRequest type)
+    public EnableAlertChannel(string userSub, EnableAlertChannelRequest enableAlertChannelRequest)
     {
         UserSub = userSub;
-        Type = type;
+        EnableAlertChannelRequest = enableAlertChannelRequest;
     }
 }

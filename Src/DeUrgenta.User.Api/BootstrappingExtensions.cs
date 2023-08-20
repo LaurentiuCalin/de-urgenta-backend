@@ -93,12 +93,19 @@ namespace DeUrgenta.User.Api
             services.AddTransient<IValidateRequest<DeleteLocation>, DeleteLocationValidator>();
             services.AddTransient<IValidateRequest<UpdateLocation>, UpdateLocationValidator>();
 
+            services.AddTransient<IValidateRequest<GetUserAlertChannels>, GetUserAlertChannelsValidator>();
+            services.AddTransient<IValidateRequest<EnableAlertChannel>, EnableAlertChannelValidator>();
+            services.AddTransient<IValidateRequest<DisableAlertChannel>, DisableAlertChannelValidator>();
+            
             services.AddTransient<IValidator<UserRequest>, UserRequestValidator>();
             services.AddTransient<IValidator<UserLocationRequest>, UserSafeLocationRequestValidator>();
 
             services.AddTransient<IValidator<UserChangePasswordRequest>, UserChangePasswordRequestValidator>();
             services.AddTransient<IValidator<UserResetPasswordRequest>, UserResetPasswordRequestValidator>();
             services.AddTransient<IValidator<UserEmailPasswordResetRequest>, UserEmailPasswordResetRequestValidator>();
+            
+            services.AddTransient<IValidator<EnableAlertChannelRequest>, EnableAlertChannelRequestValidator>();
+            services.AddTransient<IValidator<DisableAlertChannelRequest>, DisableAlertChannelRequestValidator>();
             return services;
         }
     }
